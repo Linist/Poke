@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.opeious.pokemon3dstounity": {
+      "version": "https://github.com/opeious/Pokemon3DStoUnity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ccf554e4004669425fcb21c16cddb4380b1e29e7"
+    },
     "com.ptc.vuforia.engine": {
       "version": "git+https://git-packages.developer.vuforia.com#9.8.5",
       "depth": 0,
