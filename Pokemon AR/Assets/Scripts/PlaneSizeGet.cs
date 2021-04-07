@@ -6,6 +6,7 @@ public class PlaneSizeGet : MonoBehaviour
 {
     public float planeSizeX = 0;
     public float planeSizeZ = 0;
+    public int scale = 1;
     public GameObject plane;
 
 
@@ -27,8 +28,8 @@ public class PlaneSizeGet : MonoBehaviour
     {
         Debug.Log("running GetPlaneSize");
         //multiplies the scale of the plane with 10, so we have the units in unity units.
-        planeSizeX = plane.transform.localScale.x * 10;
-        planeSizeZ = plane.transform.localScale.z * 10;
+        planeSizeX = plane.transform.localScale.x * scale;
+        planeSizeZ = plane.transform.localScale.z * scale;
         yield return new WaitForEndOfFrame();
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlaneGenerationCalibration>().enabled = false;
     }
