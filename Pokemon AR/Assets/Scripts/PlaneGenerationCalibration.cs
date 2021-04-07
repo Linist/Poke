@@ -85,6 +85,7 @@ public class PlaneGenerationCalibration : MonoBehaviour
         lowestX = 0;
         highestZ = 0;
         lowestZ = 0;
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlaneSizeGet>().StartScript();
     }
 
     public void newScale(GameObject resizeObject, float newSizeX, float newSizeZ)
