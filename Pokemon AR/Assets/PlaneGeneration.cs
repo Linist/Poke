@@ -15,6 +15,10 @@ public class PlaneGeneration : MonoBehaviour
     public float highestX, lowestX, highestZ, lowestZ;
 
     public float distanceX, distanceZ;
+    public int width, height;
+
+    public GameObject mapGenerator;
+    public GameObject mapVisualiser;
 
     public Button calibrationButton;
     public Button removeButton;
@@ -101,6 +105,13 @@ public class PlaneGeneration : MonoBehaviour
         highestZ = 0;
         lowestZ = 0;
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlaneSizeGet>().StartScript();
+
+        width = Mathf.CeilToInt(distanceX);
+        height = Mathf.CeilToInt(distanceZ);
+
+        mapGenerator.GetComponent<MapGenerator>().GenerateMap(midpoint, width, height);
+        mapVisualiser.transform.position = new Vector3(midpoint.x - (width / 2), midpoint.y, midpoint.z - (height / 2));
+
     }
 
     public void newScale(GameObject resizeObject, float newSizeX, float newSizeZ)

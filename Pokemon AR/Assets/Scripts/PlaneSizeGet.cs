@@ -31,6 +31,6 @@ public class PlaneSizeGet : MonoBehaviour
         planeSizeX = plane.transform.localScale.x * scale;
         planeSizeZ = plane.transform.localScale.z * scale;
         yield return new WaitForEndOfFrame();
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlaneGenerationCalibration>().enabled = false;
+        //GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlaneGenerationCalibration>().enabled = false;
     }
 }

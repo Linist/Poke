@@ -51,7 +51,7 @@ class PokemonStatsImporter
             case "Grass":
                 element = Elements.Grass;
                 break;
-            case "Electric"
+            case "Electric":
                 element = Elements.Electric;
                 break;
         }

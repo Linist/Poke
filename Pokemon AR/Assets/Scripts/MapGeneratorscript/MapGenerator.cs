@@ -16,15 +16,15 @@ public class MapGenerator : MonoBehaviour
 
     private Vector3 startPosition, exitPosition;
 
-    [Range(3, 20)]
-    public int width, length = 11;
+    //[Range(3, 20)]
+    //public int width, length = 11;
     private MapGrid grid;
-    
-    private void Start()
+
+    public void GenerateMap(Vector3 midpoint, int width, int length)
     {
         grid = new MapGrid(width, length);
         grid.CheckCoordiantes();
-        gridVisualizer.VisualizeGrid(width, length);
+        gridVisualizer.VisualizeGrid(midpoint, width, length); // midpoint, width, length
         MapHelper.RandomlyChooseAndSetStartAndExit(grid, ref startPosition, ref exitPosition, randomPlacement, startEdge, exitEdge);
         Debug.Log("start" + startPosition);
         Debug.Log("Exit" + exitPosition);
