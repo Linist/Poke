@@ -8,6 +8,8 @@ public partial class MapVisualiser : MonoBehaviour
     private Transform parent;
     public Color startColor, exitColor;
 
+    Dictionary<Vector3, GameObject> dictionaryOfObstacles = new Dictionary<Vector3, GameObject>();
+
     private void Awake()
     {
         parent = this.transform;
@@ -43,7 +45,10 @@ public partial class MapVisualiser : MonoBehaviour
                 {
                     continue;
                 }
-                CreateIndicator(positionOnGrid, Color.white, PrimitiveType.Cube);
+                if(dictionaryOfObstacles.ContainsKey(positionOnGrid) == false)
+                {
+                    CreateIndicator(positionOnGrid, Color.white, PrimitiveType.Cube);
+                }
             }
         }
     }
@@ -70,9 +75,19 @@ public partial class MapVisualiser : MonoBehaviour
     private void CreateIndicator(Vector3 position, Color color, PrimitiveType sphere)
     {
         var element = GameObject.CreatePrimitive(sphere);
+        dictionaryOfObstacles.Add(position, element);
         element.transform.position = position+ new Vector3( .5f,.5f,.5f);
         element.transform.parent = parent;
         var renderer = element.GetComponent<Renderer>();
         renderer.material.SetColor("_Color", color);
+    }
+
+    public void ClearMap()
+    {
+        foreach (var obstacle in dictionaryOfObstacles.Values)
+        {
+            Destroy(obstacle);
+        }
+        dictionaryOfObstacles.Clear();
     }
 }

@@ -22,17 +22,25 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap(Vector3 midpoint, int width, int length)
     {
+
+        gridVisualizer.VisualizeGrid(midpoint, width, length); // midpoint, width, length
+
+        GenerateNewMap(width, length);
+    }
+
+    private void GenerateNewMap(int width, int length)
+    {
+        mapVisualiser.ClearMap();
+
         grid = new MapGrid(width, length);
         grid.CheckCoordiantes();
-        gridVisualizer.VisualizeGrid(midpoint, width, length); // midpoint, width, length
+
         MapHelper.RandomlyChooseAndSetStartAndExit(grid, ref startPosition, ref exitPosition, randomPlacement, startEdge, exitEdge);
+       
         Debug.Log("start" + startPosition);
         Debug.Log("Exit" + exitPosition);
         CandidateMap map = new CandidateMap(grid, numberOfPieces);
         map.CreateMap(startPosition, exitPosition);
         mapVisualiser.VisualizeMap(grid, map.ReturnMapData(), false);
-        
     }
-
-
 }
