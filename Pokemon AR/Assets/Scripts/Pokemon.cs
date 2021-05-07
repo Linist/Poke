@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 public enum Elements
 {
     Fire,
@@ -13,7 +12,7 @@ public enum Elements
 }
 
 [System.Serializable]
-public class PokemonCreate
+public class Pokemon
 {
 
     public string name;
@@ -41,7 +40,7 @@ public class PokemonCreate
 
     public int Attack(Pokemon enemy)
     {
-        
+
         int attack = baseAttack * level;
         attack = CalculateElementalEffects(attack, enemy.element);
         int defence = enemy.CalculateDefence();
@@ -70,7 +69,7 @@ public class PokemonCreate
             element == Elements.Fire && enemyType == Elements.Grass
             )
         {
-            
+
             return damage * 2;
         }
         if (element == Elements.Fire && enemyType == Elements.Water ||
@@ -78,7 +77,7 @@ public class PokemonCreate
             element == Elements.Grass && enemyType == Elements.Fire
             )
         {
-           
+
             return damage / 2;
         }
         return damage;
@@ -94,4 +93,3 @@ public class PokemonCreate
         hp = maxHp;
     }
 }
-

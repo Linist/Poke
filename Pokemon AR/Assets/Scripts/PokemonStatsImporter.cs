@@ -31,6 +31,7 @@ class PokemonStatsImporter
                     return InstantiatePokemon(level, values);
                 }
             }
+            return null;
         }
 
 
@@ -39,7 +40,7 @@ class PokemonStatsImporter
     static Pokemon InstantiatePokemon(int level, String[] values)
     {
         // Get the element from the pokemon info
-        Elements element;
+        Elements element = Elements.Fire;
         switch (values[10])
         {
             case "Fire":
