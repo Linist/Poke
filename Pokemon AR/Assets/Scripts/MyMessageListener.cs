@@ -19,7 +19,7 @@ public class MyMessageListener : MonoBehaviour
     //Invoked on recieved data from the serial device
     void onMessageArrived(string msg)
     {
-        Debug.Log("Arried: " + msg);
+        Debug.Log("Arrived: " + msg);
     }
 
     /* Invoked when a connect/disconnect even occurs. The parameter "success"
