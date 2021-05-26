@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class PlaneGenerationCalibration : MonoBehaviour
 {
+    public List<Transform> trackedPoints;
     public Transform[] points;
-    //public Transform point1, point2, point3, point4;
+    //public float posY;
     public Vector3 midpoint;
     public GameObject plane;
 
@@ -14,11 +16,7 @@ public class PlaneGenerationCalibration : MonoBehaviour
 
     public float highestX, lowestX, highestZ, lowestZ;
 
-    //public float[] distancesX, distancesZ;
     public float distanceX, distanceZ;
-
-    private int cubesTracked = 0;
-    private bool tracked = false;
 
     public Button calibrationButton;
 
@@ -29,20 +27,45 @@ public class PlaneGenerationCalibration : MonoBehaviour
         plane.transform.localScale = startScale;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (tracked == true)
-        {
-            calibrationButton.gameObject.SetActive(true);
-            // Calls FindBounds(); in the unity editor UI-click-function.
-        }
-    }
-
     public void FindBounds()
     {
-        plane.SetActive(true);
+        /*
+        // Using List to calculate not that well
+        midpoint = new Vector3 (0f, 0f, 0f);
 
+        foreach (var pos in trackedPoints)
+        {
+            posY += pos.position.y;
+
+            if (highestX != 0 && lowestX != 0 && highestZ != 0 && lowestZ != 0)
+            {
+                if (pos.position.x > highestX)
+                    highestX = pos.position.x;
+                else if (pos.position.x < lowestX)
+                    lowestX = pos.position.x;
+
+                if (pos.position.z > highestZ)
+                    highestZ = pos.position.z;
+                else if (pos.position.z < lowestZ)
+                    lowestZ = pos.position.z;
+
+            }
+            else
+            {
+                highestX = pos.position.x;
+                lowestX = pos.position.x;
+                highestZ = pos.position.z;
+                lowestZ = pos.position.z;
+            }
+            
+        }
+        midpoint.x = (highestX + lowestX) / 2;
+        midpoint.y = posY / 4;
+        midpoint.z = (highestZ + lowestZ) / 2;
+        plane.transform.position = midpoint;
+        */
+
+        // Using Array to calculate works ok
         for (int i = 0; i < points.Length; i++)
         {
             if (highestX != 0 && lowestX != 0 && highestZ != 0 && lowestZ != 0)
@@ -79,7 +102,7 @@ public class PlaneGenerationCalibration : MonoBehaviour
         {
             newScale(plane, distanceX, distanceZ);
         }
-
+        plane.SetActive(true);
 
         highestX = 0;
         lowestX = 0;
@@ -101,20 +124,24 @@ public class PlaneGenerationCalibration : MonoBehaviour
         resizeObject.transform.localScale = rescale;
     }
 
-    public void CubeDetected()
+    public void CubeDetected(Transform trackedPosition)
     {
-        cubesTracked++;
-        if (cubesTracked >= 4)
+        if (!trackedPoints.Contains(trackedPosition))
+            trackedPoints.Add(trackedPosition);
+        else return;
+
+        if (trackedPoints.Count >= 4)
         {
-            cubesTracked = 4;
-            tracked = true;
+            //points = trackedPoints.ToArray();
+            calibrationButton.gameObject.SetActive(true);
+            // Calls FindBounds(); in the unity editor UI-click-function.
         }
-        Debug.Log("cubes tracked = " + cubesTracked);
     }
+    /*
     public void CubeLost()
     {
         cubesTracked--;
         if (cubesTracked <= 0)
             cubesTracked = 0;
-    }
+    }*/
 }
