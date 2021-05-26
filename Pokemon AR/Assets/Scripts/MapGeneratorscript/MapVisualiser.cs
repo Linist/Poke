@@ -7,6 +7,7 @@ public partial class MapVisualiser : MonoBehaviour
 {
     private Transform parent;
     public Color startColor, exitColor;
+    public GameObject Grass;
 
     Dictionary<Vector3, GameObject> dictionaryOfObstacles = new Dictionary<Vector3, GameObject>();
 
@@ -47,7 +48,7 @@ public partial class MapVisualiser : MonoBehaviour
                 }
                 if(dictionaryOfObstacles.ContainsKey(positionOnGrid) == false)
                 {
-                    CreateIndicator(positionOnGrid, Color.white, PrimitiveType.Cube);
+                    CreateIndicator(positionOnGrid, Color.white, Grass);
                 }
             }
         }
@@ -59,7 +60,7 @@ public partial class MapVisualiser : MonoBehaviour
         {
             if(knight.Postion== positionOnGrid)
             {
-                CreateIndicator(positionOnGrid, Color.red, PrimitiveType.Cube);
+                CreateIndicator(positionOnGrid, Color.red, Grass);
                 return true;
             }
         }
@@ -68,15 +69,15 @@ public partial class MapVisualiser : MonoBehaviour
 
     private void PlaceStartAndExitPosint(MapData data)
     {
-        CreateIndicator(data.startPosition, startColor, PrimitiveType.Sphere);
-        CreateIndicator(data.exitPosition, exitColor, PrimitiveType.Sphere);
+       // CreateIndicator(data.startPosition, startColor, PrimitiveType.Sphere);
+        //CreateIndicator(data.exitPosition, exitColor, PrimitiveType.Sphere);
     }
 
-    private void CreateIndicator(Vector3 position, Color color, PrimitiveType sphere)
+    private void CreateIndicator(Vector3 position, Color color, GameObject sphere)
     {
-        var element = GameObject.CreatePrimitive(sphere);
+        var element = Instantiate(sphere);
         dictionaryOfObstacles.Add(position, element);
-        element.transform.position = position+ new Vector3( 0f,.5f,0f);
+        element.transform.position = position+ new Vector3( 0.5f,0f,0f);
         element.transform.parent = parent;
         var renderer = element.GetComponent<Renderer>();
         renderer.material.SetColor("_Color", color);
