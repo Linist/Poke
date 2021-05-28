@@ -47,7 +47,17 @@ public class Pokemon
         int damage = attack - defence;
 
         if (damage < 0)
+        {
             return 0;
+        }
+       
+        if else (damage >= 100)
+        {
+            damage = 100;
+            enemy.ApplyDamage(damage);
+            return damage;
+        }
+      
         else
         {
             enemy.ApplyDamage(damage);
