@@ -48,21 +48,24 @@ public class Pokemon
 
         if (damage < 0)
         {
-            return 0;
+            damage = 0;
+           
         }
        
-        if else (damage >= 100)
+        else if (damage >= 100)
         {
             damage = 100;
             enemy.ApplyDamage(damage);
-            return damage;
+         
         }
       
-        else
+        else if (damage > 0 && damage < 100)
         {
             enemy.ApplyDamage(damage);
-            return damage;
+           
         }
+
+        return damage;
     }
 
 
