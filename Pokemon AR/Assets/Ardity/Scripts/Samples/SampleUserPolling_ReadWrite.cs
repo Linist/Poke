@@ -35,15 +35,31 @@ public class SampleUserPolling_ReadWrite : MonoBehaviour
         // sample serial device that accepts this input is given in the README.
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log("Sending A");
-            serialController.SendSerialMessage("A");
+            Debug.Log("Sending Y");
+            serialController.SendSerialMessage("Y");
         }
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            Debug.Log("Sending Z");
-            serialController.SendSerialMessage("Z");
+            Debug.Log("Sending J");
+            serialController.SendSerialMessage("J");
         }
+        
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            serialController.SendSerialMessage("A");
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            serialController.SendSerialMessage("5");
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            serialController.SendSerialMessage("a");
+        }
+
 
 
         //---------------------------------------------------------------------
