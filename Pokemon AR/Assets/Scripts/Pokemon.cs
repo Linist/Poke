@@ -45,13 +45,27 @@ public class Pokemon
         attack = CalculateElementalEffects(attack, enemy.element);
         int defence = enemy.CalculateDefence();
         int damage = attack - defence;
+
         if (damage < 0)
-            return 0;
-        else
+        {
+            damage = 0;
+           
+        }
+       
+        else if (damage >= 100)
+        {
+            damage = 100;
+            enemy.ApplyDamage(damage);
+         
+        }
+      
+        else if (damage > 0 && damage < 100)
         {
             enemy.ApplyDamage(damage);
-            return damage;
+           
         }
+
+        return damage;
     }
 
 
@@ -60,13 +74,13 @@ public class Pokemon
         return baseDefence * level;
     }
 
-    /// Calculates elemental effect, check table at https://bulbapedia.bulbagarden.net/wiki/Type#Type_chart for a reference
 
     public int CalculateElementalEffects(int damage, Elements enemyType)
     {
         if (element == Elements.Water && enemyType == Elements.Fire ||
             element == Elements.Grass && enemyType == Elements.Water ||
-            element == Elements.Fire && enemyType == Elements.Grass
+            element == Elements.Fire && enemyType == Elements.Grass ||
+            element == Elements.Electric && enemyType == Elements.Water
             )
         {
 
@@ -74,7 +88,8 @@ public class Pokemon
         }
         if (element == Elements.Fire && enemyType == Elements.Water ||
             element == Elements.Water && enemyType == Elements.Grass ||
-            element == Elements.Grass && enemyType == Elements.Fire
+            element == Elements.Grass && enemyType == Elements.Fire ||
+            element == Elements.Electric && enemyType == Elements.Grass
             )
         {
 
