@@ -15,6 +15,7 @@ CRGB leds[NUM_LEDS];
 #define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  120
 
+
 int red_light_1 = 10;
 int green_light_1 = 11;
 int blue_light_1 = 12;
@@ -23,9 +24,10 @@ int red_light_2 = 6;
 int green_light_2 = 7;
 int blue_light_2 = 8;
 
-int damageTaken = 0;
 int damageGiven = 0;
+int damageTaken = 0;
 int totalDamage = 0;
+int damageLED = 0;
 
 
 void setup() {
@@ -51,11 +53,18 @@ void setup() {
 
   Wire.begin(9);
   Wire.onReceive(receiveEvent);
+  RGB_color(0,255,0,0,255,0);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+ 
+  if(damageGiven == 35){
+   resetHealth(); 
+  }else{
+    return;
+  }
+  delay(100);
+  
 }
 
 void RGB_color(int red_light_1v, int green_light_1v, int blue_light_1v, int red_light_2v, int green_light_2v, int blue_light_2v){
@@ -71,7 +80,14 @@ void receiveEvent (int bytes){
   damageGiven = Wire.read();
   damageTaken += damageGiven;
   totalDamage = NUM_LEDS - damageTaken;
+  damageLED = totalDamage;
   takeDamage();
+}
+
+void noDamage(){
+  totalDamage = 0;
+  damageGiven = 0;
+  damageTaken = 0;
 }
 
 void takeDamage(){
@@ -113,7 +129,9 @@ void takeDamage(){
     RGB_color(0,0,0,0,0,0);
     delay(100);
 
-for (int j = NUM_LEDS; j >= totalDamage; j--){
+    RGB_color(255,0,0,255,0,0);
+
+for (int j = NUM_LEDS; j >= damageLED; j--){
       leds[j] = CRGB::Red;
 
   delay(100);
@@ -122,13 +140,14 @@ for (int j = NUM_LEDS; j >= totalDamage; j--){
 }
 
 void resetHealth(){
-  damageTaken = 0;
-  totalDamage = 0;
+
   
   for (int i = 0; i < NUM_LEDS; i++){
-      leds[i] = CRGB::Green;
+      leds[i] = CRGB::Purple;
       
   delay(100);
   FastLED.show();
   }
+  RGB_color(0,255,0,0,255,0);
+  noDamage();
 }

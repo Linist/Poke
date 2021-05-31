@@ -34,7 +34,8 @@ int damageLED = 0;
 
 //variables that can be send to the other arduino
 int damageSend = 0;
-int resetHP = 35;
+int resetHP = 40;
+int battleVar = 999;
 
 
 
@@ -376,8 +377,10 @@ void loop() {
 
   case '5':
     resetHealth();
+    slaveHeal();
     break;
   }
+
 }
 
 //Picking color for the two LED cubes
@@ -400,6 +403,13 @@ void giveDamage(){
   
   
 }
+
+void slaveHeal(){
+  Wire.beginTransmission(9);
+  Wire.write(resetHP);
+  Wire.endTransmission();
+}
+
 
 void calculateDamage(){
   //takes the damage from the case and adds it to variable
@@ -457,6 +467,8 @@ void takeSomeDamage(){
     }
     RGB_color(0,0,0,0,0,0);
     delay(100);
+
+    RGB_color(255,0,0,255,0,0);
   
   for (int j = NUM_LEDS; j >= damageLED; j--){
       leds[j] = CRGB::Red;
@@ -477,5 +489,6 @@ void resetHealth(){
   delay(100);
   FastLED.show();
   }
+  RGB_color(0,255,0,0,255,0);
   noDamage();
 }
