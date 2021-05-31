@@ -13,6 +13,6 @@ public class PokeSpawner : MonoBehaviour
         if (range == 0)
             enemy = PokemonStatsImporter.CreateRandom();
 
-        this.gameObject.GetComponent<BattleScript>().StartBattle();
+        this.gameObject.GetComponent<BattleScript>().PreBattle();
     }
 }

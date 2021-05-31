@@ -335,6 +335,9 @@ MonoBehaviour:
     moves: []
   selectablePokemon: []
   movesBtns: {fileID: 206756190}
+  playerPokemon: {fileID: 0}
+  enemyPokemon: {fileID: 0}
+  Ditto: {fileID: 5135581393524448807, guid: 2becd8c99dcdb164396db2556ffafda4, type: 3}
   playerSpawnpoint: {fileID: 0}
   enemySpawnpoint: {fileID: 0}
   enemyLight: 0

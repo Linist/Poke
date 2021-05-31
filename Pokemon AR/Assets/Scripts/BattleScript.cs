@@ -8,11 +8,32 @@ public class BattleScript : MonoBehaviour
     public Pokemon player, enemy;
     public List<Pokemon> selectablePokemon;
     public GameObject movesBtns;
-    GameObject playerPokemon, enemyPokemon;
+    public GameObject playerPokemon, enemyPokemon, Ditto;
     public Transform playerSpawnpoint, enemySpawnpoint;
     public int enemyLight, playerLight;
     public SerialController serialController;
     public bool playerTurn;
+
+    public void PreBattle()
+    {
+        serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
+        serialController.SendSerialMessage("6");
+
+        enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
+
+        enemySpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetEnemySpawnpoint();
+
+        if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
+        {
+            Instantiate(Ditto, enemySpawnpoint);
+        }
+        else
+        {
+            enemyPokemon = GameObject.Find(enemy.name);
+            Instantiate(enemyPokemon, enemySpawnpoint);
+        }
+        
+    }
 
     public void ScanPlayer(GameObject selectedPokemon)
     {
@@ -26,34 +47,31 @@ public class BattleScript : MonoBehaviour
                 player = selectablePokemon[i];
             }
         }
+        player.level = enemy.level;
+
+        
+        movesBtns.transform.GetChild(0).GetComponentInChildren<Text>().text = player.moves[0].name;
+        if (player.moves[1].name != "" || player.moves[1].name != null)
+        {
+            movesBtns.transform.GetChild(1).GetComponentInChildren<Text>().text = player.moves[1].name;
+        }
+        if (player.moves[2].name != "" || player.moves[2].name != null)
+        {
+            movesBtns.transform.GetChild(2).GetComponentInChildren<Text>().text = player.moves[2].name;
+        }
+
+        StartBattle();
     }
 
     // Start is called before the first frame update
     public void StartBattle()
     {
-        serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
-        serialController.SendSerialMessage("6");
-
-        enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
-        player.level = enemy.level;
-
         playerPokemon = GameObject.Find(player.name);
 
-        if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
-        {
-            enemyPokemon = GameObject.Find("Ditto");
-        }
-        else
-        {
-            enemyPokemon = GameObject.Find(enemy.name);
-        }
-
         playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetPlayerSpawnpoint();
-        enemySpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetEnemySpawnpoint();
         // set rotation.
 
         Instantiate(playerPokemon, playerSpawnpoint);
-        Instantiate(enemyPokemon, enemySpawnpoint);
 
         playerTurn = true;
         StartCoroutine(PlayerTurn());
@@ -120,6 +138,7 @@ public class BattleScript : MonoBehaviour
 
     void ChooseMove()
     {
+        // Need to set move
         string move = ""; 
 
         playerTurn = false;
