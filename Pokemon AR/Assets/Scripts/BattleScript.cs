@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class BattleScript : MonoBehaviour
 {
-    public Pokemon player;
-    public Pokemon enemy;
-    public int enemyLight;
-    public int playerLight;
+    public Pokemon player, enemy;
+    GameObject playerPokemon, enemyPokemon;
+    public Transform playerSpawnpoint, enemySpawnpoint;
+    public int enemyLight, playerLight;
     public SerialController serialController;
 
     // Start is called before the first frame update
@@ -17,6 +17,24 @@ public class BattleScript : MonoBehaviour
         serialController.SendSerialMessage("6");
 
         enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
+
+        playerPokemon = GameObject.Find(player.name);
+
+        if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
+        {
+            enemyPokemon = GameObject.Find("Ditto");
+        }
+        else
+        {
+            enemyPokemon = GameObject.Find(enemy.name);
+        }
+
+        playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetPlayerSpawnpoint();
+        enemySpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetEnemySpawnpoint();
+        // set rotation.
+
+        Instantiate(playerPokemon, playerSpawnpoint);
+        Instantiate(enemyPokemon, enemySpawnpoint);
 
         StartCoroutine(EndBattle());
     }
@@ -66,6 +84,9 @@ public class BattleScript : MonoBehaviour
    public IEnumerator EndBattle()
     {
         yield return new WaitForSeconds(1);
+        Destroy(playerPokemon);
+        Destroy(enemyPokemon);
+
         serialController.SendSerialMessage("5");
     }
 

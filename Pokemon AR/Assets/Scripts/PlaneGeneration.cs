@@ -17,6 +17,8 @@ public class PlaneGeneration : MonoBehaviour
     public float distanceX, distanceZ;
     public int width, height;
 
+    public Transform playerSpawnpoint, enemySpawnpoint;
+
     public GameObject mapGenerator;
     public GameObject mapVisualiser;
 
@@ -112,7 +114,6 @@ public class PlaneGeneration : MonoBehaviour
 
         mapGenerator.GetComponent<MapGenerator>().GenerateMap(midpoint, width, height);
         mapVisualiser.transform.position = new Vector3(midpoint.x - (width / 2), midpoint.y, midpoint.z - (height / 2));
-
     }
 
     public void newScale(GameObject resizeObject, float newSizeX, float newSizeZ)
@@ -126,6 +127,17 @@ public class PlaneGeneration : MonoBehaviour
         rescale.z = newSizeZ * rescale.z / sizeZ;
 
         resizeObject.transform.localScale = rescale;
+    }
+
+    public Vector3 GetPlayerSpawnpoint()
+    {
+        playerSpawnpoint.position = new Vector3(width / 2, height * .2f);
+        return playerSpawnpoint.position;
+    }
+    public Vector3 GetEnemySpawnpoint()
+    {
+        enemySpawnpoint.position = new Vector3(width / 2, height * .8f);
+        return enemySpawnpoint.position;
     }
 
     public void CubeDetected(Transform trackedPosition)
