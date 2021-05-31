@@ -62,6 +62,8 @@ class PokemonStatsImporter
         moves.Add(new Move(values[13]));
         if (values[14] != "")
             moves.Add(new Move(values[14]));
+        if (values[15] != "")
+            moves.Add(new Move(values[15]));
 
         // always two possible moves
         else

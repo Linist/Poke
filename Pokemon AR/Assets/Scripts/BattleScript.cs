@@ -1,14 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleScript : MonoBehaviour
 {
     public Pokemon player, enemy;
+    public List<Pokemon> selectablePokemon;
+    public GameObject movesBtns;
     GameObject playerPokemon, enemyPokemon;
     public Transform playerSpawnpoint, enemySpawnpoint;
     public int enemyLight, playerLight;
     public SerialController serialController;
+    public bool playerTurn;
+
+    public void ScanPlayer(GameObject selectedPokemon)
+    {
+        string pokeName = selectedPokemon.transform.GetChild(0).name;
+        selectablePokemon = GameObject.Find("PokeDex").GetComponent<ScanningPokemon>().pokeDeck;
+
+        for(int i = 0; i < selectablePokemon.Count; i++)
+        {
+            if (selectablePokemon[i].name == pokeName)
+            {
+                player = selectablePokemon[i];
+            }
+        }
+    }
 
     // Start is called before the first frame update
     public void StartBattle()
@@ -17,6 +35,7 @@ public class BattleScript : MonoBehaviour
         serialController.SendSerialMessage("6");
 
         enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
+        player.level = enemy.level;
 
         playerPokemon = GameObject.Find(player.name);
 
@@ -36,12 +55,23 @@ public class BattleScript : MonoBehaviour
         Instantiate(playerPokemon, playerSpawnpoint);
         Instantiate(enemyPokemon, enemySpawnpoint);
 
-        StartCoroutine(EndBattle());
+        playerTurn = true;
+        StartCoroutine(PlayerTurn());
     }
 
     public IEnumerator PlayerTurn()
     {
-        yield return new WaitForSeconds(3);
+        playerTurn = true;
+        while (playerTurn == true)
+        {
+            // enable move buttons
+            movesBtns.SetActive(true);
+
+            //click on move will call function to turn bool to false
+            //Also attacks and do damage here instead of below
+            yield return new WaitForSeconds(.1f);
+        }
+        
 
         int damageOnEnemy = player.Attack(enemy);
         enemyLight = Mathf.CeilToInt(damageOnEnemy * (30/enemy.maxHp));
@@ -56,21 +86,19 @@ public class BattleScript : MonoBehaviour
         {
             StartCoroutine(EnemyTurn());
         }
-           
-
     }
-    
 
     public IEnumerator EnemyTurn()
     {
+        movesBtns.SetActive(false);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5);
 
         int damageOnplayer = enemy.Attack(player);
         playerLight = Mathf.CeilToInt(damageOnplayer * (30/player.maxHp));
 
         SendPlayerLight(playerLight);
-
+        
         if (player.hp <= 0)
         {
             StartCoroutine(EndBattle());
@@ -88,6 +116,13 @@ public class BattleScript : MonoBehaviour
         Destroy(enemyPokemon);
 
         serialController.SendSerialMessage("5");
+    }
+
+    void ChooseMove()
+    {
+        string move = ""; 
+
+        playerTurn = false;
     }
 
     public void SendPlayerLight(int playerLight)
