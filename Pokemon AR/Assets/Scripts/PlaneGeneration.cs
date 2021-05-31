@@ -25,6 +25,7 @@ public class PlaneGeneration : MonoBehaviour
 
     public void FindBounds()
     {
+        calibrationButton.gameObject.SetActive(false);
         /*
         // Using List to calculate works bad
         midpoint = new Vector3 (0f, 0f, 0f);
@@ -138,7 +139,7 @@ public class PlaneGeneration : MonoBehaviour
             //points = trackedPoints.ToArray();
             calibrationButton.gameObject.SetActive(true);
             // Calls FindBounds(); in the unity editor UI-click-function.
-            removeButton.gameObject.SetActive(true);
+            //removeButton.gameObject.SetActive(true);
         }
 
     }
