@@ -32,7 +32,7 @@ public class ScanningPokemon : MonoBehaviour
             i = 1;
             CreatePokeDeck();
         }
-        else if (pokemon3 == "" && pokeName != pokemon2)
+        else if (pokemon3 == "" && pokeName != pokemon2 && pokeName != pokemon1)
         {
             pokemon3 = pokeName;
             i = 2;

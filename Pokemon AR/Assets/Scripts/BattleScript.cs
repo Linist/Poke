@@ -9,7 +9,8 @@ public class BattleScript : MonoBehaviour
     public List<Pokemon> selectablePokemon;
     public GameObject movesBtns;
     public Text battleText;
-    public GameObject playerPokemon, enemyPokemon, Ditto;
+    public GameObject playerPokemon, enemyPokemon;
+    public GameObject CharmanderPrefab, BulbasaurPrefab, SquitlePrefab, PikachuPrefab, DittoPrefab;
     public Transform playerSpawnpoint, enemySpawnpoint;
     public int enemyLight, playerLight;
     public SerialController serialController;
@@ -29,11 +30,11 @@ public class BattleScript : MonoBehaviour
 
         if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
         {
-            Instantiate(Ditto, enemySpawnpoint);
+            Instantiate(DittoPrefab, enemySpawnpoint);
         }
         else
         {
-            enemyPokemon = GameObject.Find(enemy.name);
+            enemyPokemon = SpecifyPokemon(enemy.name);
             Instantiate(enemyPokemon, enemySpawnpoint);
         }
         battleText.text = "A wild "+enemy.name+" appear!";
@@ -60,9 +61,16 @@ public class BattleScript : MonoBehaviour
             return;
         }
 
+        playerPokemon = SpecifyPokemon(player.name);
+
+        playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetPlayerSpawnpoint();
+        // set rotation.
+
         player.level = enemy.level;
+        
+        Instantiate(playerPokemon, playerSpawnpoint);
 
-
+        battleText.gameObject.SetActive(true);
         battleText.text = "Go " + player.name + "!";
         StartBattle();
     }
@@ -70,14 +78,6 @@ public class BattleScript : MonoBehaviour
     // Start is called before the first frame update
     public void StartBattle()
     {
-        playerPokemon = GameObject.Find(player.name);
-
-        playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetPlayerSpawnpoint();
-        // set rotation.
-
-        Instantiate(playerPokemon, playerSpawnpoint);
-
-        
         movesBtns.transform.GetChild(0).GetComponentInChildren<Text>().text = player.moves[0].name;
         if (player.moves[1].name != "" || player.moves[1].name != null)
         {
@@ -155,6 +155,29 @@ public class BattleScript : MonoBehaviour
         Destroy(enemyPokemon);
 
         serialController.SendSerialMessage("5");
+    }
+
+    GameObject SpecifyPokemon(string pokemonName)
+    {
+        switch (pokemonName)
+        {
+            case "Charmander":
+                return CharmanderPrefab;
+                break;
+            case "Squirtle":
+                return SquitlePrefab; 
+                break;
+            case "Bulbasaur":
+                return BulbasaurPrefab;
+                break;
+            case "Pikachu":
+                return PikachuPrefab;
+                break;
+            default:
+                return null;
+                break;
+        }
+        
     }
 
     public void ChooseMove()
