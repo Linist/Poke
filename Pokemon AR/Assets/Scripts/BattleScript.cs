@@ -8,6 +8,7 @@ public class BattleScript : MonoBehaviour
     public Pokemon player, enemy;
     public List<Pokemon> selectablePokemon;
     public GameObject movesBtns;
+    public Text battleText;
     public GameObject playerPokemon, enemyPokemon, Ditto;
     public Transform playerSpawnpoint, enemySpawnpoint;
     public int enemyLight, playerLight;
@@ -18,6 +19,9 @@ public class BattleScript : MonoBehaviour
     {
         serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
         serialController.SendSerialMessage("6");
+
+        battleText.gameObject.SetActive(true);
+        
 
         enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
 
@@ -32,34 +36,34 @@ public class BattleScript : MonoBehaviour
             enemyPokemon = GameObject.Find(enemy.name);
             Instantiate(enemyPokemon, enemySpawnpoint);
         }
-        
+        battleText.text = "A wild "+enemy.name+" appear!";
     }
 
     public void ScanPlayer(GameObject selectedPokemon)
     {
         string pokeName = selectedPokemon.transform.GetChild(0).name;
+
         selectablePokemon = GameObject.Find("PokeDex").GetComponent<ScanningPokemon>().pokeDeck;
 
-        for(int i = 0; i < selectablePokemon.Count; i++)
+        if (selectablePokemon.Count >= 3)
         {
-            if (selectablePokemon[i].name == pokeName)
+            for (int i = 0; i < selectablePokemon.Count; i++)
             {
-                player = selectablePokemon[i];
+                if (selectablePokemon[i].name == pokeName)
+                {
+                    player = selectablePokemon[i];
+                }
             }
         }
+        else
+        {
+            return;
+        }
+
         player.level = enemy.level;
 
-        
-        movesBtns.transform.GetChild(0).GetComponentInChildren<Text>().text = player.moves[0].name;
-        if (player.moves[1].name != "" || player.moves[1].name != null)
-        {
-            movesBtns.transform.GetChild(1).GetComponentInChildren<Text>().text = player.moves[1].name;
-        }
-        if (player.moves[2].name != "" || player.moves[2].name != null)
-        {
-            movesBtns.transform.GetChild(2).GetComponentInChildren<Text>().text = player.moves[2].name;
-        }
 
+        battleText.text = "Go " + player.name + "!";
         StartBattle();
     }
 
@@ -73,7 +77,17 @@ public class BattleScript : MonoBehaviour
 
         Instantiate(playerPokemon, playerSpawnpoint);
 
-        playerTurn = true;
+        
+        movesBtns.transform.GetChild(0).GetComponentInChildren<Text>().text = player.moves[0].name;
+        if (player.moves[1].name != "" || player.moves[1].name != null)
+        {
+            movesBtns.transform.GetChild(1).GetComponentInChildren<Text>().text = player.moves[1].name;
+        }
+        if (player.moves[2].name != "" || player.moves[2].name != null)
+        {
+            movesBtns.transform.GetChild(2).GetComponentInChildren<Text>().text = player.moves[2].name;
+        }
+
         StartCoroutine(PlayerTurn());
     }
 
@@ -82,6 +96,7 @@ public class BattleScript : MonoBehaviour
         playerTurn = true;
         while (playerTurn == true)
         {
+            battleText.text = "Choose a move!";
             // enable move buttons
             movesBtns.SetActive(true);
 
@@ -98,6 +113,7 @@ public class BattleScript : MonoBehaviour
 
         if (enemy.hp <= 0)
         {
+            battleText.text = enemy.name + " faints. You win!";
             StartCoroutine(EndBattle());
         }
         else
@@ -112,6 +128,8 @@ public class BattleScript : MonoBehaviour
 
         yield return new WaitForSeconds(5);
 
+        battleText.text = enemy.name + " uses " + enemy.moves[Random.Range(0,enemy.moves.Count-1)];
+
         int damageOnplayer = enemy.Attack(player);
         playerLight = Mathf.CeilToInt(damageOnplayer * (30/player.maxHp));
 
@@ -119,6 +137,7 @@ public class BattleScript : MonoBehaviour
         
         if (player.hp <= 0)
         {
+            battleText.text = player.name + " faints. You lost!";
             StartCoroutine(EndBattle());
         }
         else
@@ -130,17 +149,19 @@ public class BattleScript : MonoBehaviour
    public IEnumerator EndBattle()
     {
         yield return new WaitForSeconds(1);
+        battleText.gameObject.SetActive(false);
+
         Destroy(playerPokemon);
         Destroy(enemyPokemon);
 
         serialController.SendSerialMessage("5");
     }
 
-    void ChooseMove()
+    public void ChooseMove()
     {
         // Need to set move
-        string move = ""; 
-
+        string move = this.GetComponent<Text>().text;
+        battleText.text = player.name + " uses " + move;
         playerTurn = false;
     }
 
