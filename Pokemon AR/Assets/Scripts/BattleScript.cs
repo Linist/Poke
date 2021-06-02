@@ -26,7 +26,7 @@ public class BattleScript : MonoBehaviour
 
         enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
 
-        enemySpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetEnemySpawnpoint();
+        enemySpawnpoint.position = GameObject.Find("ARCamera").GetComponent<GenerationSetup>().GetEnemySpawnpoint();
 
         if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
         {
@@ -63,7 +63,7 @@ public class BattleScript : MonoBehaviour
 
         playerPokemon = SpecifyPokemon(player.name);
 
-        playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<PlaneGeneration>().GetPlayerSpawnpoint();
+        playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<GenerationSetup>().GetPlayerSpawnpoint();
         // set rotation.
 
         player.level = enemy.level;
@@ -163,19 +163,19 @@ public class BattleScript : MonoBehaviour
         {
             case "Charmander":
                 return CharmanderPrefab;
-                break;
+                //break;
             case "Squirtle":
                 return SquitlePrefab; 
-                break;
+                //break;
             case "Bulbasaur":
                 return BulbasaurPrefab;
-                break;
+                //break;
             case "Pikachu":
                 return PikachuPrefab;
-                break;
+                //break;
             default:
                 return null;
-                break;
+                //break;
         }
         
     }
