@@ -77,7 +77,7 @@ public partial class MapVisualiser : MonoBehaviour
     {
         var element = Instantiate(sphere);
         dictionaryOfObstacles.Add(position, element);
-        element.transform.position = position+ new Vector3(.5f,0f,0f);
+        element.transform.position = position+ new Vector3(.5f,0f,.5f);
         element.transform.parent = parent;
         var renderer = element.GetComponent<Renderer>();
         renderer.material.SetColor("_Color", color);

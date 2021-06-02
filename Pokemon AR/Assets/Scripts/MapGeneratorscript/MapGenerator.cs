@@ -16,15 +16,13 @@ public class MapGenerator : MonoBehaviour
 
     private Vector3 startPosition, exitPosition;
 
-    //[Range(3, 20)]
-    public int width, length = 5;
+    [Range(3, 20)]
+    public int width = 5, length = 5;
     private MapGrid grid;
 
-    //int width, int length
     public void GenerateMap()
     {
-        //midpoint
-        gridVisualizer.VisualizeGrid(width, length); // midpoint, width, length
+        gridVisualizer.VisualizeGrid(width, length); 
 
         GenerateNewMap(width, length);
     }

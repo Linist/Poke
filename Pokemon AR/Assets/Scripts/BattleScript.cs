@@ -26,7 +26,7 @@ public class BattleScript : MonoBehaviour
 
         enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
 
-        enemySpawnpoint.position = GameObject.Find("ARCamera").GetComponent<GenerationSetup>().GetEnemySpawnpoint();
+        enemySpawnpoint.position = GameObject.Find("Map").GetComponent<StartGeneration>().GetEnemySpawnpoint();
 
         if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
         {
@@ -63,7 +63,7 @@ public class BattleScript : MonoBehaviour
 
         playerPokemon = SpecifyPokemon(player.name);
 
-        playerSpawnpoint.position = GameObject.Find("ARCamera").GetComponent<GenerationSetup>().GetPlayerSpawnpoint();
+        playerSpawnpoint.position = GameObject.Find("Map").GetComponent<StartGeneration>().GetPlayerSpawnpoint();
         // set rotation.
 
         player.level = enemy.level;
