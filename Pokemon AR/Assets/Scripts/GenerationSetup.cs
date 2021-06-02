@@ -32,9 +32,10 @@ public class GenerationSetup : MonoBehaviour
         height = Mathf.CeilToInt(planeSizeZ);
         
         // Calls the map generator script
+        /*
         mapGenerator.GetComponent<MapGenerator>().GenerateMap(midpoint, width, height);
         mapVisualiser.transform.position = new Vector3(midpoint.x - (width / 2), midpoint.y, midpoint.z - (height / 2));
-        
+        */
     }
 
     public Vector3 GetPlayerSpawnpoint()

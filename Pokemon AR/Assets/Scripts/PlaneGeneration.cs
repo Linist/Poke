@@ -111,9 +111,10 @@ public class PlaneGeneration : MonoBehaviour
 
         width = Mathf.CeilToInt(distanceX);
         height = Mathf.CeilToInt(distanceZ);
-
+        /*
         mapGenerator.GetComponent<MapGenerator>().GenerateMap(midpoint, width, height);
         mapVisualiser.transform.position = new Vector3(midpoint.x - (width / 2), midpoint.y, midpoint.z - (height / 2));
+        */
     }
 
     public void newScale(GameObject resizeObject, float newSizeX, float newSizeZ)
