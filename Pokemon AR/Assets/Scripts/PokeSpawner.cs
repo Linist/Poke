@@ -9,10 +9,18 @@ public class PokeSpawner : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        int range = Random.Range(0, 10);
-        if (range == 0)
-            enemy = PokemonStatsImporter.CreateRandom();
+        if (other.CompareTag("Player"))
+        {
+            int range = Random.Range(0, 10);
+            if (range == 0)
+                enemy = PokemonStatsImporter.CreateRandom();
 
-        this.gameObject.GetComponent<BattleScript>().PreBattle();
+            this.gameObject.GetComponent<BattleScript>().PreBattle();
+        }
+        else
+        {
+            return;
+        }
+        
     }
 }
