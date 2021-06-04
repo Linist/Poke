@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,23 +14,27 @@ public class BattleScript : MonoBehaviour
     public GameObject playerPokemon, enemyPokemon;
     public GameObject CharmanderPrefab, BulbasaurPrefab, SquitlePrefab, PikachuPrefab, DittoPrefab;
     public Transform playerSpawnpoint, enemySpawnpoint;
+    public int damageOnEnemy, damageOnplayer;
     public int enemyLight, playerLight;
     public SerialController serialController;
     public bool playerTurn;
-
+    /*
     public void EnemySpawnpoint(Transform enemyTransform)
     {
         enemySpawnpoint.position = enemyTransform.position;
         // Set rotation
-    }
+    }*/
     public void PlayerSpawnpoint(Transform playerTransform)
     {
         playerSpawnpoint.position = playerTransform.position;
         //Set rotation
     }
 
-    public void PreBattle()
+    public void PreBattle(Transform enemyTransform)
     {
+        
+        enemySpawnpoint.position = enemyTransform.position;
+
         serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
         serialController.SendSerialMessage("6");
 
@@ -49,12 +54,15 @@ public class BattleScript : MonoBehaviour
             Instantiate(enemyPokemon, enemySpawnpoint);
         }
         battleText.text = "A wild "+enemy.name+" appear!";
+
     }
 
     public void ScanPlayer(GameObject selectedPokemon)
     {
         string pokeName = selectedPokemon.transform.GetChild(0).name;
 
+        player = PokemonStatsImporter.Create(enemy.level, pokeName);
+        /*
         selectablePokemon = GameObject.Find("PokeDex").GetComponent<ScanningPokemon>().pokeDeck;
 
         if (selectablePokemon.Count >= 3)
@@ -69,57 +77,77 @@ public class BattleScript : MonoBehaviour
         }
         else
         {
-            return;
+            player = null;
         }
+        */
 
         playerPokemon = SpecifyPokemon(player.name);
 
-        player.level = enemy.level;
-        
+        //player.level = enemy.level;
+
         Instantiate(playerPokemon, playerSpawnpoint);
 
-        battleText.gameObject.SetActive(true);
         battleText.text = "Go " + player.name + "!";
 
-        if (player != null && enemy != null)
-        {
-            StartBattle();
-        }
+        StartCoroutine(StartBattle());
     }
 
     // Start is called before the first frame update
-    public void StartBattle()
+    public IEnumerator StartBattle()
     {
+        movesBtns.SetActive(true);
+
         movesBtns.transform.GetChild(0).GetComponentInChildren<Text>().text = player.moves[0].name;
         if (player.moves[1].name != "" || player.moves[1].name != null)
         {
             movesBtns.transform.GetChild(1).GetComponentInChildren<Text>().text = player.moves[1].name;
         }
-        if (player.moves[2].name != "" || player.moves[2].name != null)
+        if (player.moves.Count() >= 3)
         {
-            movesBtns.transform.GetChild(2).GetComponentInChildren<Text>().text = player.moves[2].name;
+            if (player.moves[2].name != "" || player.moves[2].name != null)
+            {
+                movesBtns.transform.GetChild(2).GetComponentInChildren<Text>().text = player.moves[2].name;
+            }
+            else
+            {
+                movesBtns.transform.GetChild(2).GetComponentInChildren<Text>().text = "Tackle";
+            }
         }
+        //serialController.SendSerialMessage("5");
 
-        StartCoroutine(PlayerTurn());
+        yield return new WaitForSeconds(2f);
+
+        //StartCoroutine(PlayerTurn());
     }
 
     public IEnumerator PlayerTurn()
     {
+        Debug.Log("PlayerTurn");
+
+        /*
         playerTurn = true;
         while (playerTurn == true)
         {
+            Debug.Log("In playerTurn while-loop");
             battleText.text = "Choose a move!";
-            // enable move buttons
-            movesBtns.SetActive(true);
 
             //click on move will call function to turn bool to false
             //Also attacks and do damage here instead of below
             yield return new WaitForSeconds(.1f);
-        }
+        }*/
+        battleText.text = "Choose a move!";
+        yield return new WaitForSeconds(.1f);
         
+        //Debug.Log("After while-loop in playerTurn");
 
-        int damageOnEnemy = player.Attack(enemy);
-        enemyLight = Mathf.CeilToInt(damageOnEnemy * (30/enemy.maxHp));
+        damageOnEnemy = player.Attack(enemy)* (30 / enemy.maxHp);
+        //enemyLight = Mathf.RoundToInt(damageOnEnemy * (30/enemy.maxHp));
+        enemyLight = (int)damageOnEnemy;
+
+        if(enemyLight == 0)
+        {
+            enemyLight = Random.Range(1, 30);
+        }
 
         SendEnemyLight(enemyLight);
 
@@ -142,9 +170,15 @@ public class BattleScript : MonoBehaviour
 
         battleText.text = enemy.name + " uses " + enemy.moves[Random.Range(0,enemy.moves.Count-1)];
 
-        int damageOnplayer = enemy.Attack(player);
-        playerLight = Mathf.CeilToInt(damageOnplayer * (30/player.maxHp));
+        damageOnplayer = enemy.Attack(player) * (30 / player.maxHp);
+        //playerLight = Mathf.RoundToInt(damageOnplayer * (30/player.maxHp));
+        playerLight = (int)damageOnplayer;
 
+        if (playerLight == 0)
+        {
+
+            playerLight = Random.Range(1, 10);
+        }
         SendPlayerLight(playerLight);
         
         if (player.hp <= 0)
@@ -154,7 +188,8 @@ public class BattleScript : MonoBehaviour
         }
         else
         {
-            StartCoroutine(PlayerTurn());
+            movesBtns.SetActive(true);
+            //StartCoroutine(PlayerTurn());
         }
     }
 
@@ -166,7 +201,7 @@ public class BattleScript : MonoBehaviour
         Destroy(playerPokemon);
         Destroy(enemyPokemon);
 
-        serialController.SendSerialMessage("5");
+        //serialController.SendSerialMessage("5");
 
         startBattleBtn.gameObject.SetActive(true);
     }
@@ -194,12 +229,13 @@ public class BattleScript : MonoBehaviour
         
     }
 
-    public void ChooseMove()
+    public void ChooseMove(Text moveText)
     {
         // Need to set move
-        string move = this.GetComponent<Text>().text;
+        string move = moveText.text;
         battleText.text = player.name + " uses " + move;
-        playerTurn = false;
+        //playerTurn = false;
+        StartCoroutine(PlayerTurn());
     }
 
     public void SendPlayerLight(int playerLight)
