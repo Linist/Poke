@@ -34,8 +34,7 @@ int damageLED = 0;
 
 //variables that can be send to the other arduino
 int damageSend = 0;
-int resetHP = 40;
-int battleVar = 999;
+int resetHP = 35;
 
 
 
