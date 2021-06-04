@@ -32,9 +32,15 @@ public class StartGeneration : MonoBehaviour
         mapVisualiser.transform.position = new Vector3(this.transform.position.x - (refPlane.localScale.x / 2), this.transform.position.y, this.transform.position.z - (refPlane.localScale.z / 2));
         this.transform.SetParent(parent);
 
-
+        StartCoroutine(RemoveFinder());
     }
-    public Vector3 GetPlayerSpawnpoint()
+    public IEnumerator RemoveFinder()
+    {
+        yield return new WaitForSeconds(5);
+        GameObject.Find("Ground Plane Stage").GetComponent<DefaultTrackableEventHandler>().enabled = false;
+        GameObject.Find("Plane Finder").SetActive(false);
+    }
+        public Vector3 GetPlayerSpawnpoint()
     {
         playerSpawnpoint.position = new Vector3(refPlane.localScale.x / 2, refPlane.localScale.z * .2f);
         return playerSpawnpoint.position;

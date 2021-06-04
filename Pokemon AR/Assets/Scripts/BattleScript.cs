@@ -8,6 +8,7 @@ public class BattleScript : MonoBehaviour
     public Pokemon player, enemy;
     public List<Pokemon> selectablePokemon;
     public GameObject movesBtns;
+    public Button startBattleBtn;
     public Text battleText;
     public GameObject playerPokemon, enemyPokemon;
     public GameObject CharmanderPrefab, BulbasaurPrefab, SquitlePrefab, PikachuPrefab, DittoPrefab;
@@ -16,18 +17,28 @@ public class BattleScript : MonoBehaviour
     public SerialController serialController;
     public bool playerTurn;
 
+    public void EnemySpawnpoint(Transform enemyTransform)
+    {
+        enemySpawnpoint.position = enemyTransform.position;
+        // Set rotation
+    }
+    public void PlayerSpawnpoint(Transform playerTransform)
+    {
+        playerSpawnpoint.position = playerTransform.position;
+        //Set rotation
+    }
+
     public void PreBattle()
     {
         serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
         serialController.SendSerialMessage("6");
 
         battleText.gameObject.SetActive(true);
+
+        //enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
+        enemy = PokemonStatsImporter.CreateRandom();
+
         
-
-        enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
-
-        enemySpawnpoint.position = GameObject.Find("Map").GetComponent<StartGeneration>().GetEnemySpawnpoint();
-
         if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
         {
             Instantiate(DittoPrefab, enemySpawnpoint);
@@ -63,16 +74,17 @@ public class BattleScript : MonoBehaviour
 
         playerPokemon = SpecifyPokemon(player.name);
 
-        playerSpawnpoint.position = GameObject.Find("Map").GetComponent<StartGeneration>().GetPlayerSpawnpoint();
-        // set rotation.
-
         player.level = enemy.level;
         
         Instantiate(playerPokemon, playerSpawnpoint);
 
         battleText.gameObject.SetActive(true);
         battleText.text = "Go " + player.name + "!";
-        StartBattle();
+
+        if (player != null && enemy != null)
+        {
+            StartBattle();
+        }
     }
 
     // Start is called before the first frame update
@@ -155,6 +167,8 @@ public class BattleScript : MonoBehaviour
         Destroy(enemyPokemon);
 
         serialController.SendSerialMessage("5");
+
+        startBattleBtn.gameObject.SetActive(true);
     }
 
     GameObject SpecifyPokemon(string pokemonName)
