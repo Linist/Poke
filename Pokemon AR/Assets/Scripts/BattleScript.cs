@@ -29,15 +29,8 @@ public class BattleScript : MonoBehaviour
         enemySpawnpoint.position = enemyTransform.position;
         enemy = PokemonStatsImporter.CreateRandom();
         
-        if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
-        {
-            Instantiate(DittoPrefab, enemySpawnpoint);
-        }
-        else
-        {
-            enemyPokemon = SpecifyPokemon(enemy.name);
-            Instantiate(enemyPokemon, enemySpawnpoint);
-        }
+        enemyPokemon = SpecifyPokemon(enemy.name);
+        Instantiate(enemyPokemon, enemySpawnpoint);
 
         battleText.gameObject.SetActive(true);
         battleText.text = "A wild "+enemy.name+" appear!";
