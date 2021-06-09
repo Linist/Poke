@@ -9,7 +9,6 @@ public class BattleScript : MonoBehaviour
     public Pokemon player, enemy;
     public List<Pokemon> selectablePokemon;
     public GameObject movesBtns;
-    public Button startBattleBtn;
     public Text battleText;
     public GameObject playerPokemon, enemyPokemon;
     public GameObject CharmanderPrefab, BulbasaurPrefab, SquitlePrefab, PikachuPrefab, DittoPrefab;
@@ -18,31 +17,17 @@ public class BattleScript : MonoBehaviour
     public int enemyLight, playerLight;
     public SerialController serialController;
     public bool playerTurn;
-    /*
-    public void EnemySpawnpoint(Transform enemyTransform)
-    {
-        enemySpawnpoint.position = enemyTransform.position;
-        // Set rotation
-    }*/
+    
+
     public void PlayerSpawnpoint(Transform playerTransform)
     {
         playerSpawnpoint.position = playerTransform.position;
-        //Set rotation
     }
 
     public void PreBattle(Transform enemyTransform)
     {
-        
         enemySpawnpoint.position = enemyTransform.position;
-
-        serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
-        serialController.SendSerialMessage("6");
-
-        battleText.gameObject.SetActive(true);
-
-        //enemy = this.gameObject.GetComponent<PokeSpawner>().enemy;
         enemy = PokemonStatsImporter.CreateRandom();
-
         
         if (enemy.name != "Bulbasaur" || enemy.name != "Charmander" || enemy.name != "Squirtle" || enemy.name != "Pikachu")
         {
@@ -53,6 +38,8 @@ public class BattleScript : MonoBehaviour
             enemyPokemon = SpecifyPokemon(enemy.name);
             Instantiate(enemyPokemon, enemySpawnpoint);
         }
+
+        battleText.gameObject.SetActive(true);
         battleText.text = "A wild "+enemy.name+" appear!";
 
     }
@@ -60,8 +47,8 @@ public class BattleScript : MonoBehaviour
     public void ScanPlayer(GameObject selectedPokemon)
     {
         string pokeName = selectedPokemon.transform.GetChild(0).name;
-
         player = PokemonStatsImporter.Create(enemy.level, pokeName);
+
         /*
         selectablePokemon = GameObject.Find("PokeDex").GetComponent<ScanningPokemon>().pokeDeck;
 
@@ -82,9 +69,6 @@ public class BattleScript : MonoBehaviour
         */
 
         playerPokemon = SpecifyPokemon(player.name);
-
-        //player.level = enemy.level;
-
         Instantiate(playerPokemon, playerSpawnpoint);
 
         battleText.text = "Go " + player.name + "!";
@@ -92,9 +76,11 @@ public class BattleScript : MonoBehaviour
         StartCoroutine(StartBattle());
     }
 
-    // Start is called before the first frame update
     public IEnumerator StartBattle()
     {
+        serialController = GameObject.Find("PokeSerialController").GetComponent<SerialController>();
+        serialController.SendSerialMessage("6");
+
         movesBtns.SetActive(true);
 
         movesBtns.transform.GetChild(0).GetComponentInChildren<Text>().text = player.moves[0].name;
@@ -116,29 +102,12 @@ public class BattleScript : MonoBehaviour
         //serialController.SendSerialMessage("5");
 
         yield return new WaitForSeconds(2f);
-
-        //StartCoroutine(PlayerTurn());
     }
 
     public IEnumerator PlayerTurn()
     {
-        Debug.Log("PlayerTurn");
-
-        /*
-        playerTurn = true;
-        while (playerTurn == true)
-        {
-            Debug.Log("In playerTurn while-loop");
-            battleText.text = "Choose a move!";
-
-            //click on move will call function to turn bool to false
-            //Also attacks and do damage here instead of below
-            yield return new WaitForSeconds(.1f);
-        }*/
         battleText.text = "Choose a move!";
         yield return new WaitForSeconds(.1f);
-        
-        //Debug.Log("After while-loop in playerTurn");
 
         damageOnEnemy = player.Attack(enemy)* (30 / enemy.maxHp);
         //enemyLight = Mathf.RoundToInt(damageOnEnemy * (30/enemy.maxHp));
@@ -189,7 +158,6 @@ public class BattleScript : MonoBehaviour
         else
         {
             movesBtns.SetActive(true);
-            //StartCoroutine(PlayerTurn());
         }
     }
 
@@ -212,29 +180,22 @@ public class BattleScript : MonoBehaviour
         {
             case "Charmander":
                 return CharmanderPrefab;
-                //break;
             case "Squirtle":
                 return SquitlePrefab; 
-                //break;
             case "Bulbasaur":
                 return BulbasaurPrefab;
-                //break;
             case "Pikachu":
                 return PikachuPrefab;
-                //break;
             default:
-                return null;
-                //break;
+                return DittoPrefab;
         }
-        
     }
 
     public void ChooseMove(Text moveText)
     {
-        // Need to set move
         string move = moveText.text;
         battleText.text = player.name + " uses " + move;
-        //playerTurn = false;
+
         StartCoroutine(PlayerTurn());
     }
 
